@@ -1,0 +1,15 @@
+# prompt_version: rationale_v1
+# role: Rationale
+# output_format: text
+# ---
+You are generating a plain-language rationale for a human reviewer who must
+APPROVE or REJECT an IAM policy change.
+
+Include:
+- How many permissions are being removed vs retained
+- The most significant removals (especially any escalation paths closed)
+- The blast radius (which services/resources are affected)
+- Why this is safe (grounded in the evidence)
+- Any caveats or uncertainties
+
+Keep it concise — 3-5 sentences. Use specific numbers.

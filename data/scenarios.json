@@ -1,0 +1,860 @@
+[
+  {
+    "id": "sc-01-unused-role",
+    "description": "IAM role completely dormant for 90+ days",
+    "alert": {
+      "id": "alert-01",
+      "title": "Unused IAM Role: data-pipeline-legacy",
+      "category": "unused_role",
+      "severity": "MEDIUM",
+      "principal": "arn:aws:iam::123456789012:role/data-pipeline-legacy",
+      "service": "data-pipeline-legacy"
+    },
+    "fixtures": {
+      "cloudtrail": [],
+      "last_accessed": [],
+      "analyzer_findings": [
+        {
+          "finding": "UnusedRole",
+          "days_unused": 120
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject",
+              "s3:PutObject",
+              "logs:CreateLogGroup"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role\" \"data_pipeline_legacy\" {\n  # dormant 120 days\n}",
+      "terraform_state": {
+        "name": "data-pipeline-legacy"
+      }
+    },
+    "_oracle": {
+      "expected_class": "unused_role",
+      "safe_actions": [],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-02-s3-wildcard",
+    "description": "S3 wildcard but only GetObject and PutObject actually used",
+    "alert": {
+      "id": "alert-02",
+      "title": "Overly broad S3 permissions: upload-service",
+      "category": "wildcard_action",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:role/upload-service",
+      "service": "upload-service"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "s3:GetObject",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "s3:PutObject",
+          "count": 60,
+          "last_used": "2026-08-27"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-28"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "UnusedActions",
+          "unused": [
+            "s3:DeleteObject",
+            "s3:DeleteBucket",
+            "s3:PutBucketPolicy"
+          ]
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:*"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role_policy\" \"upload\" {\n  policy = jsonencode({ Action = [\"s3:*\"] })\n}",
+      "terraform_state": {
+        "name": "upload-service"
+      }
+    },
+    "_oracle": {
+      "expected_class": "wildcard_action",
+      "safe_actions": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-03-passrole-escalation",
+    "description": "iam:PassRole granted on Resource:* — privilege escalation path",
+    "alert": {
+      "id": "alert-03",
+      "title": "Unscoped PassRole: deploy-role",
+      "category": "passrole_escalation",
+      "severity": "CRITICAL",
+      "principal": "arn:aws:iam::123456789012:role/deploy-role",
+      "service": "deploy-role"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "lambda:CreateFunction",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "lambda:InvokeFunction",
+          "count": 60,
+          "last_used": "2026-08-27"
+        },
+        {
+          "action": "iam:PassRole",
+          "count": 70,
+          "last_used": "2026-08-26"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "lambda",
+          "last_accessed": "2026-08-28"
+        },
+        {
+          "service": "iam",
+          "last_accessed": "2026-08-25"
+        }
+      ],
+      "analyzer_findings": [],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "lambda:*",
+              "iam:PassRole",
+              "logs:*"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role_policy\" \"deploy\" {\n  policy = jsonencode({ Action = [\"lambda:*\", \"iam:PassRole\"] })\n}",
+      "terraform_state": {
+        "name": "deploy-role"
+      }
+    },
+    "_oracle": {
+      "expected_class": "passrole_escalation",
+      "safe_actions": [
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction",
+        "iam:PassRole"
+      ],
+      "must_escalate": false,
+      "resource_arns": [
+        "arn:aws:iam::123456789012:role/deploy-role-execution-role"
+      ]
+    }
+  },
+  {
+    "id": "sc-04-createaccesskey",
+    "description": "CreateAccessKey granted but never used — credential management risk",
+    "alert": {
+      "id": "alert-04",
+      "title": "Unused credential actions: ci-bot",
+      "category": "wildcard_action",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:user/ci-bot",
+      "service": "ci-bot"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "s3:GetObject",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "ecr:GetAuthorizationToken",
+          "count": 60,
+          "last_used": "2026-08-27"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-28"
+        },
+        {
+          "service": "ecr",
+          "last_accessed": "2026-08-27"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "UnusedActions",
+          "unused": [
+            "iam:CreateAccessKey",
+            "iam:DeleteAccessKey"
+          ]
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject",
+              "ecr:GetAuthorizationToken",
+              "iam:CreateAccessKey",
+              "iam:DeleteAccessKey"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_user_policy\" \"ci_bot\" {}",
+      "terraform_state": {
+        "name": "ci-bot"
+      }
+    },
+    "_oracle": {
+      "expected_class": "wildcard_action",
+      "safe_actions": [
+        "s3:GetObject",
+        "ecr:GetAuthorizationToken"
+      ],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-05-cicd-admin-star",
+    "description": "Full admin (*:*) on a CI/CD deploy role",
+    "alert": {
+      "id": "alert-05",
+      "title": "Admin access: cicd-deployer",
+      "category": "admin_star",
+      "severity": "CRITICAL",
+      "principal": "arn:aws:iam::123456789012:role/cicd-deployer",
+      "service": "cicd-deployer"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "s3:PutObject",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "ecr:PushImage",
+          "count": 60,
+          "last_used": "2026-08-27"
+        },
+        {
+          "action": "ecs:UpdateService",
+          "count": 70,
+          "last_used": "2026-08-26"
+        },
+        {
+          "action": "logs:PutLogEvents",
+          "count": 80,
+          "last_used": "2026-08-25"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-28"
+        },
+        {
+          "service": "ecs",
+          "last_accessed": "2026-08-27"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "AdminAccess",
+          "note": "Action:* granted"
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "*"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role_policy_attachment\" \"admin\" {\n  policy_arn = \"arn:aws:iam::aws:policy/AdministratorAccess\"\n}",
+      "terraform_state": {
+        "name": "cicd-deployer"
+      }
+    },
+    "_oracle": {
+      "expected_class": "admin_star",
+      "safe_actions": [
+        "s3:PutObject",
+        "ecr:PushImage",
+        "ecs:UpdateService",
+        "logs:PutLogEvents"
+      ],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-06-cross-account",
+    "description": "Trust policy allows any principal from partner account",
+    "alert": {
+      "id": "alert-06",
+      "title": "Broad cross-account trust: shared-data-reader",
+      "category": "cross_account_trust",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:role/shared-data-reader",
+      "service": "shared-data-reader"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "s3:GetObject",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "s3:ListBucket",
+          "count": 60,
+          "last_used": "2026-08-27"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-28"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "BroadTrust",
+          "external_account": "987654321098"
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject",
+              "s3:ListBucket",
+              "s3:PutObject"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role\" \"shared_data_reader\" {\n  assume_role_policy = \"arn:aws:iam::987654321098:root\"\n}",
+      "terraform_state": {
+        "name": "shared-data-reader",
+        "trust_policy": {
+          "Principal": {
+            "AWS": "arn:aws:iam::987654321098:root"
+          }
+        }
+      }
+    },
+    "_oracle": {
+      "expected_class": "cross_account_trust",
+      "safe_actions": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-07-kms-decrypt-all",
+    "description": "KMS Decrypt on all keys but only one key actually used",
+    "alert": {
+      "id": "alert-07",
+      "title": "Broad KMS access: encryption-service",
+      "category": "sensitive_wildcard",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:role/encryption-service",
+      "service": "encryption-service"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "kms:Decrypt",
+          "count": 200,
+          "last_used": "2026-08-28",
+          "resource": "arn:aws:kms:us-east-1:123456789012:key/abc-123"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "kms",
+          "last_accessed": "2026-08-28"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "BroadKMS",
+          "note": "kms:* on Resource:*"
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "kms:Decrypt",
+              "kms:Encrypt",
+              "kms:GenerateDataKey"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role_policy\" \"enc\" {\n  # kms:* on all keys\n}",
+      "terraform_state": {
+        "name": "encryption-service"
+      }
+    },
+    "_oracle": {
+      "expected_class": "sensitive_wildcard",
+      "safe_actions": [
+        "kms:Decrypt"
+      ],
+      "must_escalate": false,
+      "resource_arns": [
+        "arn:aws:kms:us-east-1:123456789012:key/abc-123"
+      ]
+    }
+  },
+  {
+    "id": "sc-08-machine-90k",
+    "description": "Machine identity with massive entitlements, ~5% used",
+    "alert": {
+      "id": "alert-08",
+      "title": "Over-entitled machine identity: batch-processor",
+      "category": "wildcard_action",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:role/batch-processor",
+      "service": "batch-processor"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "s3:GetObject",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "sqs:SendMessage",
+          "count": 60,
+          "last_used": "2026-08-27"
+        },
+        {
+          "action": "sqs:ReceiveMessage",
+          "count": 70,
+          "last_used": "2026-08-26"
+        },
+        {
+          "action": "logs:PutLogEvents",
+          "count": 80,
+          "last_used": "2026-08-25"
+        },
+        {
+          "action": "logs:CreateLogStream",
+          "count": 90,
+          "last_used": "2026-08-24"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-28"
+        },
+        {
+          "service": "sqs",
+          "last_accessed": "2026-08-27"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "MassiveUnused",
+          "unused_count": 95
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject",
+              "sqs:SendMessage",
+              "sqs:ReceiveMessage",
+              "logs:PutLogEvents",
+              "logs:CreateLogStream",
+              "ec2:Action0",
+              "ec2:Action1",
+              "ec2:Action2",
+              "ec2:Action3",
+              "ec2:Action4",
+              "ec2:Action5",
+              "ec2:Action6",
+              "ec2:Action7",
+              "ec2:Action8",
+              "ec2:Action9",
+              "ec2:Action10",
+              "ec2:Action11",
+              "ec2:Action12",
+              "ec2:Action13",
+              "ec2:Action14",
+              "ec2:Action15",
+              "ec2:Action16",
+              "ec2:Action17",
+              "ec2:Action18",
+              "ec2:Action19",
+              "ec2:Action20",
+              "ec2:Action21",
+              "ec2:Action22",
+              "ec2:Action23",
+              "ec2:Action24",
+              "ec2:Action25",
+              "ec2:Action26",
+              "ec2:Action27",
+              "ec2:Action28",
+              "ec2:Action29",
+              "ec2:Action30",
+              "ec2:Action31",
+              "ec2:Action32",
+              "ec2:Action33",
+              "ec2:Action34",
+              "ec2:Action35",
+              "ec2:Action36",
+              "ec2:Action37",
+              "ec2:Action38",
+              "ec2:Action39",
+              "ec2:Action40",
+              "ec2:Action41",
+              "ec2:Action42",
+              "ec2:Action43",
+              "ec2:Action44",
+              "ec2:Action45",
+              "ec2:Action46",
+              "ec2:Action47",
+              "ec2:Action48",
+              "ec2:Action49",
+              "ec2:Action50",
+              "ec2:Action51",
+              "ec2:Action52",
+              "ec2:Action53",
+              "ec2:Action54",
+              "ec2:Action55",
+              "ec2:Action56",
+              "ec2:Action57",
+              "ec2:Action58",
+              "ec2:Action59",
+              "ec2:Action60",
+              "ec2:Action61",
+              "ec2:Action62",
+              "ec2:Action63",
+              "ec2:Action64",
+              "ec2:Action65",
+              "ec2:Action66",
+              "ec2:Action67",
+              "ec2:Action68",
+              "ec2:Action69",
+              "ec2:Action70",
+              "ec2:Action71",
+              "ec2:Action72",
+              "ec2:Action73",
+              "ec2:Action74",
+              "ec2:Action75",
+              "ec2:Action76",
+              "ec2:Action77",
+              "ec2:Action78",
+              "ec2:Action79",
+              "ec2:Action80",
+              "ec2:Action81",
+              "ec2:Action82",
+              "ec2:Action83",
+              "ec2:Action84",
+              "ec2:Action85",
+              "ec2:Action86",
+              "ec2:Action87",
+              "ec2:Action88",
+              "ec2:Action89",
+              "ec2:Action90",
+              "ec2:Action91",
+              "ec2:Action92",
+              "ec2:Action93",
+              "ec2:Action94"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "# 100 actions granted",
+      "terraform_state": {
+        "name": "batch-processor"
+      }
+    },
+    "_oracle": {
+      "expected_class": "wildcard_action",
+      "safe_actions": [
+        "s3:GetObject",
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "logs:PutLogEvents",
+        "logs:CreateLogStream"
+      ],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-09-human-team-change",
+    "description": "Developer moved teams, old permissions lingering",
+    "alert": {
+      "id": "alert-09",
+      "title": "Stale permissions: dev-alice",
+      "category": "wildcard_action",
+      "severity": "MEDIUM",
+      "principal": "arn:aws:iam::123456789012:user/dev-alice",
+      "service": "dev-alice"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "codecommit:GitPull",
+          "count": 50,
+          "last_used": "2026-08-28"
+        },
+        {
+          "action": "codecommit:GitPush",
+          "count": 60,
+          "last_used": "2026-08-27"
+        },
+        {
+          "action": "s3:GetObject",
+          "count": 70,
+          "last_used": "2026-08-26"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "codecommit",
+          "last_accessed": "2026-08-28"
+        },
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-26"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "UnusedActions",
+          "unused": [
+            "ec2:RunInstances",
+            "ec2:TerminateInstances",
+            "rds:CreateDBInstance"
+          ]
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "codecommit:*",
+              "s3:GetObject",
+              "ec2:RunInstances",
+              "ec2:TerminateInstances",
+              "rds:CreateDBInstance"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_user_policy\" \"dev_alice\" {}",
+      "terraform_state": {
+        "name": "dev-alice"
+      }
+    },
+    "_oracle": {
+      "expected_class": "wildcard_action",
+      "safe_actions": [
+        "codecommit:GitPull",
+        "codecommit:GitPush",
+        "s3:GetObject"
+      ],
+      "must_escalate": false
+    }
+  },
+  {
+    "id": "sc-10-secrets-wildcard",
+    "description": "SecretsManager:* but only reads one specific secret",
+    "alert": {
+      "id": "alert-10",
+      "title": "Broad secrets access: app-backend",
+      "category": "sensitive_wildcard",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:role/app-backend",
+      "service": "app-backend"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "secretsmanager:GetSecretValue",
+          "count": 300,
+          "last_used": "2026-08-28",
+          "resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:db-creds-abc123"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "secretsmanager",
+          "last_accessed": "2026-08-28"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "BroadSecrets"
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "secretsmanager:GetSecretValue",
+              "secretsmanager:DescribeSecret",
+              "secretsmanager:ListSecrets"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role_policy\" \"backend\" {}",
+      "terraform_state": {
+        "name": "app-backend"
+      }
+    },
+    "_oracle": {
+      "expected_class": "sensitive_wildcard",
+      "safe_actions": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "must_escalate": false,
+      "resource_arns": [
+        "arn:aws:secretsmanager:us-east-1:123456789012:secret:db-creds-abc123"
+      ]
+    }
+  },
+  {
+    "id": "sc-11-contradictory-boundary",
+    "description": "Sensitive action used exactly once 89 days ago at lookback boundary",
+    "alert": {
+      "id": "alert-11",
+      "title": "Ambiguous usage: security-audit-role",
+      "category": "contradictory",
+      "severity": "HIGH",
+      "principal": "arn:aws:iam::123456789012:role/security-audit-role",
+      "service": "security-audit-role"
+    },
+    "fixtures": {
+      "cloudtrail": [
+        {
+          "action": "iam:GetAccountAuthorizationDetails",
+          "count": 1,
+          "last_used": "2026-06-02"
+        },
+        {
+          "action": "s3:GetObject",
+          "count": 50,
+          "last_used": "2026-08-28"
+        }
+      ],
+      "last_accessed": [
+        {
+          "service": "iam",
+          "last_accessed": "2026-06-02"
+        },
+        {
+          "service": "s3",
+          "last_accessed": "2026-08-28"
+        }
+      ],
+      "analyzer_findings": [
+        {
+          "finding": "UnusedAction",
+          "action": "iam:GetAccountAuthorizationDetails",
+          "note": "Used once, 89 days ago — at lookback boundary"
+        }
+      ],
+      "current_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "iam:GetAccountAuthorizationDetails",
+              "iam:GetAccountSummary",
+              "s3:GetObject",
+              "s3:ListBucket"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "current_hcl": "resource \"aws_iam_role_policy\" \"audit\" {}",
+      "terraform_state": {
+        "name": "security-audit-role"
+      }
+    },
+    "_oracle": {
+      "expected_class": "contradictory",
+      "safe_actions": [
+        "s3:GetObject",
+        "iam:GetAccountAuthorizationDetails"
+      ],
+      "must_escalate": true
+    }
+  }
+]

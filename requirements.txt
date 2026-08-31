@@ -1,0 +1,20 @@
+# Sentinel-IAM runs fully offline in mock mode with only the stdlib.
+# All packages below are OPTIONAL and degrade gracefully if absent.
+
+# ── Live LLM mode (OpenRouter / OpenAI-compatible) ──
+openai>=1.40.0
+
+# ── Environment file loading ──
+python-dotenv>=1.0.1
+
+# ── Nicer CLI tables (evaluator falls back to plain text) ──
+tabulate>=0.9.0
+
+# ── Rich TUI presentation channel (optional) ──
+rich>=13.0.0
+
+# ── Slack HITL channel (optional) ──
+slack_sdk>=3.27.0
+
+# ── AWS backends: LocalStack / real sandbox (optional) ──
+boto3>=1.34.0

@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+results/
+trajectories.jsonl
+*.state.json
+.DS_Store
