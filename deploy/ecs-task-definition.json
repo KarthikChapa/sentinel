@@ -1,0 +1,49 @@
+{
+  "family": "sentinel-iam",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::024687770564:role/sentinel-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::024687770564:role/sentinel-ecs-task-role",
+  "containerDefinitions": [
+    {
+      "name": "sentinel",
+      "image": "024687770564.dkr.ecr.us-east-1.amazonaws.com/sentinel-iam:latest",
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/sentinel-iam",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      },
+      "environment": [
+        { "name": "SENTINEL_MODE", "value": "mock" },
+        { "name": "SENTINEL_BACKEND", "value": "aws" },
+        { "name": "SENTINEL_AUTO_APPROVE", "value": "true" },
+        { "name": "SENTINEL_MAX_RETRIES", "value": "3" },
+        { "name": "SENTINEL_LOOKBACK_DAYS", "value": "90" },
+        { "name": "SENTINEL_HITL_CHANNEL", "value": "auto" },
+        { "name": "SLACK_CHANNEL", "value": "C0BUH7S97NC" },
+        { "name": "AWS_DEFAULT_REGION", "value": "us-east-1" }
+      ],
+      "secrets": [
+        {
+          "name": "OPENAI_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:024687770564:secret:sentinel/openai-api-key"
+        },
+        {
+          "name": "SENTINEL_HITL_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:024687770564:secret:sentinel/hitl-secret"
+        },
+        {
+          "name": "SLACK_BOT_TOKEN",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:024687770564:secret:sentinel/slack/BOT_TOKEN"
+        }
+      ]
+    }
+  ]
+}

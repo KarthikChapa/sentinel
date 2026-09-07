@@ -1,24 +1,76 @@
+<div align="center">
+
 # Sentinel-IAM
 
-**Cloud IAM Least-Privilege Auto-Remediation with Human-in-the-Loop Gateway**
+### Evidence-driven IAM least-privilege remediation with deterministic verification and human approval
 
-Built for the micro1 Frontier Engineering Challenge.
+`AWS Lambda` · `CloudTrail` · `IAM Access Analyzer` · `Amazon S3` · `Slack HITL`
 
-## Quickstart
+</div>
 
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt   # all optional; mock mode needs only stdlib
-cp .env.example .env              # optional: fill in keys for live/slack mode
+## Architecture
 
-python scripts/generate_data.py   # generate the 11 synthetic scenarios
-python evaluator.py               # run baseline + advanced, dump traces + metrics
+```mermaid
+flowchart LR
+    A[EventBridge / Alert] --> B[AWS Lambda]
+    B --> C[Planner]
+    C --> D[Evidence Workers]
+    D --> E[CloudTrail]
+    D --> F[IAM Last Accessed]
+    D --> G[Access Analyzer]
+    D --> H[Terraform State]
+    D --> I[Actor]
+    I --> J[Policy Simulator + Verifier]
+    J -->|retry| I
+    J --> K[Risk Engine]
+    K --> L[Slack HITL]
+    L --> M[S3 Results + CloudWatch Logs]
 ```
 
-## Outputs
+Sentinel-IAM collects real usage and policy evidence from AWS, then uses an agent workflow to propose a least-privilege IAM policy. Every proposal is checked by a deterministic policy simulator and verifier; failed checks are returned to the actor for correction.
 
-- `trajectories.jsonl` — full agent trajectory traces (submission artifact)
-- `results/metrics.json` — scored metrics table
-- Printed baseline vs advanced comparison
+Verified changes are risk-scored before execution. Sensitive remediations require human approval through Slack, while run metrics, audit traces, and remediation memory are stored in Amazon S3 and execution logs are captured in CloudWatch.
 
-See `docs/` for DEMO.md, REQUIREMENTS.md, CHANGELOG.md, REPRODUCTION.md.
+## Results
+
+| Metric | Baseline | Sentinel-IAM |
+|---|---:|---:|
+| Broken-access rate | 46.06% | **0%** |
+| Escalation paths remaining | 10 | **1** |
+| Classification accuracy | 0% | **100%** |
+| Average permission reduction | 54.2% | **55.6%** |
+
+Evaluation: **11 IAM scenarios**. Full artifacts: [`metrics.json`](metrics.json), [`memory.json`](memory.json), and [`trajectories.jsonl`](trajectories.jsonl).
+
+## AWS Deployment
+
+Sentinel-IAM runs on AWS Lambda, stores evaluation artifacts in Amazon S3, emits execution logs to CloudWatch, and is scheduled through EventBridge.
+
+![AWS Lambda deployment](docs/images/aws-lambda.png)
+
+![AWS Lambda evaluation result](docs/images/aws-lambda-test.png)
+
+![Amazon S3 evaluation artifacts](docs/images/aws-s3-results.png)
+
+<p align="center">
+  <img src="docs/images/aws-eventbridge.png" alt="EventBridge weekly schedule" width="49%" />
+  <img src="docs/images/aws-cloudwatch.png" alt="CloudWatch Lambda logs" width="49%" />
+</p>
+
+## Human Approval
+
+Risk-scored remediation summaries are delivered from AWS to Slack for review and approval.
+
+![Slack remediation notification](docs/images/slack-notification.png)
+
+## Local Evaluation
+
+```bash
+python scripts/generate_data.py
+python evaluator.py
+```
+
+<p align="center">
+  <img src="docs/images/terminal-evaluation.png" alt="Local evaluation output" width="49%" />
+  <img src="docs/images/terminal-trace.png" alt="Agent trajectory output" width="49%" />
+</p>

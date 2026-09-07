@@ -1,0 +1,306 @@
+{
+  "arn:aws:iam::123456789012:role/data-pipeline-legacy": [
+    {
+      "run_id": "run_91e64a47e41e",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "unused_role",
+      "removed": [
+        "logs:CreateLogGroup",
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "kept": [],
+      "human_decision": "APPROVE",
+      "confidence": 0.3,
+      "verification_passed": false,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/upload-service": [
+    {
+      "run_id": "run_df536c54a984",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "wildcard_action",
+      "removed": [
+        "s3:*"
+      ],
+      "kept": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.47,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/deploy-role": [
+    {
+      "run_id": "run_f646c8cab932",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "passrole_escalation",
+      "removed": [
+        "lambda:*",
+        "logs:*"
+      ],
+      "kept": [
+        "iam:PassRole",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.72,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:user/ci-bot": [
+    {
+      "run_id": "run_716447450a57",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "wildcard_action",
+      "removed": [
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey"
+      ],
+      "kept": [
+        "ecr:GetAuthorizationToken",
+        "s3:GetObject"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.62,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/cicd-deployer": [
+    {
+      "run_id": "run_87ee8191d627",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "admin_star",
+      "removed": [
+        "*"
+      ],
+      "kept": [
+        "ecr:PushImage",
+        "ecs:UpdateService",
+        "logs:PutLogEvents",
+        "s3:PutObject"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.78,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/shared-data-reader": [
+    {
+      "run_id": "run_ac1ab7ec6736",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "cross_account_trust",
+      "removed": [
+        "s3:PutObject"
+      ],
+      "kept": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.67,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/encryption-service": [
+    {
+      "run_id": "run_044a29bf013a",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "sensitive_wildcard",
+      "removed": [
+        "kms:Encrypt",
+        "kms:GenerateDataKey"
+      ],
+      "kept": [
+        "kms:Decrypt"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.72,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/batch-processor": [
+    {
+      "run_id": "run_962b488fa72b",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "wildcard_action",
+      "removed": [
+        "ec2:Action0",
+        "ec2:Action1",
+        "ec2:Action10",
+        "ec2:Action11",
+        "ec2:Action12",
+        "ec2:Action13",
+        "ec2:Action14",
+        "ec2:Action15",
+        "ec2:Action16",
+        "ec2:Action17",
+        "ec2:Action18",
+        "ec2:Action19",
+        "ec2:Action2",
+        "ec2:Action20",
+        "ec2:Action21",
+        "ec2:Action22",
+        "ec2:Action23",
+        "ec2:Action24",
+        "ec2:Action25",
+        "ec2:Action26",
+        "ec2:Action27",
+        "ec2:Action28",
+        "ec2:Action29",
+        "ec2:Action3",
+        "ec2:Action30",
+        "ec2:Action31",
+        "ec2:Action32",
+        "ec2:Action33",
+        "ec2:Action34",
+        "ec2:Action35",
+        "ec2:Action36",
+        "ec2:Action37",
+        "ec2:Action38",
+        "ec2:Action39",
+        "ec2:Action4",
+        "ec2:Action40",
+        "ec2:Action41",
+        "ec2:Action42",
+        "ec2:Action43",
+        "ec2:Action44",
+        "ec2:Action45",
+        "ec2:Action46",
+        "ec2:Action47",
+        "ec2:Action48",
+        "ec2:Action49",
+        "ec2:Action5",
+        "ec2:Action50",
+        "ec2:Action51",
+        "ec2:Action52",
+        "ec2:Action53",
+        "ec2:Action54",
+        "ec2:Action55",
+        "ec2:Action56",
+        "ec2:Action57",
+        "ec2:Action58",
+        "ec2:Action59",
+        "ec2:Action6",
+        "ec2:Action60",
+        "ec2:Action61",
+        "ec2:Action62",
+        "ec2:Action63",
+        "ec2:Action64",
+        "ec2:Action65",
+        "ec2:Action66",
+        "ec2:Action67",
+        "ec2:Action68",
+        "ec2:Action69",
+        "ec2:Action7",
+        "ec2:Action70",
+        "ec2:Action71",
+        "ec2:Action72",
+        "ec2:Action73",
+        "ec2:Action74",
+        "ec2:Action75",
+        "ec2:Action76",
+        "ec2:Action77",
+        "ec2:Action78",
+        "ec2:Action79",
+        "ec2:Action8",
+        "ec2:Action80",
+        "ec2:Action81",
+        "ec2:Action82",
+        "ec2:Action83",
+        "ec2:Action84",
+        "ec2:Action85",
+        "ec2:Action86",
+        "ec2:Action87",
+        "ec2:Action88",
+        "ec2:Action89",
+        "ec2:Action9",
+        "ec2:Action90",
+        "ec2:Action91",
+        "ec2:Action92",
+        "ec2:Action93",
+        "ec2:Action94"
+      ],
+      "kept": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "s3:GetObject",
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.49,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:user/dev-alice": [
+    {
+      "run_id": "run_072436e02c91",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "wildcard_action",
+      "removed": [
+        "codecommit:*",
+        "ec2:RunInstances",
+        "ec2:TerminateInstances",
+        "rds:CreateDBInstance"
+      ],
+      "kept": [
+        "codecommit:GitPull",
+        "codecommit:GitPush",
+        "s3:GetObject"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.54,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/app-backend": [
+    {
+      "run_id": "run_6b9835f57f18",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "sensitive_wildcard",
+      "removed": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecrets"
+      ],
+      "kept": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.72,
+      "verification_passed": true,
+      "human_note": ""
+    }
+  ],
+  "arn:aws:iam::123456789012:role/security-audit-role": [
+    {
+      "run_id": "run_fcc633ccce8e",
+      "timestamp": "2026-09-07T18:01:51Z",
+      "finding_class": "contradictory",
+      "removed": [
+        "iam:GetAccountSummary",
+        "s3:ListBucket"
+      ],
+      "kept": [
+        "iam:GetAccountAuthorizationDetails",
+        "s3:GetObject"
+      ],
+      "human_decision": "APPROVE",
+      "confidence": 0.34,
+      "verification_passed": false,
+      "human_note": ""
+    }
+  ]
+}

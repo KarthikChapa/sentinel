@@ -1,0 +1,481 @@
+{
+  "timestamp": "2026-09-07T18:01:51Z",
+  "mode": "mock",
+  "scenarios_count": 11,
+  "baseline": {
+    "aggregate": {
+      "scenarios": 11,
+      "avg_broken_access_rate": 0.4606,
+      "total_broken_access": 13,
+      "total_escalation_remaining": 10,
+      "avg_reduction_pct": 54.2,
+      "total_retries": 0,
+      "hitl_escalation_rate": 0.0,
+      "classification_accuracy": 0.0,
+      "avg_wall_time_s": 0.0,
+      "total_cost": 0.0
+    },
+    "per_scenario": [
+      {
+        "scenario_id": "sc-01-unused-role",
+        "system": "baseline",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 66.7,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 86,
+          "completion": 45
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-02-s3-wildcard",
+        "system": "baseline",
+        "broken_access_rate": 1.0,
+        "broken_access_count": 2,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 60.0,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 82,
+          "completion": 48
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-03-passrole-escalation",
+        "system": "baseline",
+        "broken_access_rate": 0.3333,
+        "broken_access_count": 1,
+        "escalation_paths_remaining": 2,
+        "reduction_pct": 42.9,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 86,
+          "completion": 52
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-04-createaccesskey",
+        "system": "baseline",
+        "broken_access_rate": 0.5,
+        "broken_access_count": 1,
+        "escalation_paths_remaining": 2,
+        "reduction_pct": 50.0,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 88,
+          "completion": 47
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-05-cicd-admin-star",
+        "system": "baseline",
+        "broken_access_rate": 1.0,
+        "broken_access_count": 4,
+        "escalation_paths_remaining": 3,
+        "reduction_pct": 42.9,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 82,
+          "completion": 52
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-06-cross-account",
+        "system": "baseline",
+        "broken_access_rate": 0.5,
+        "broken_access_count": 1,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 66.7,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 86,
+          "completion": 45
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-07-kms-decrypt-all",
+        "system": "baseline",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 1,
+        "reduction_pct": 66.7,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 86,
+          "completion": 45
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-08-machine-90k",
+        "system": "baseline",
+        "broken_access_rate": 0.4,
+        "broken_access_count": 2,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 41.0,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 280,
+          "completion": 200
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-09-human-team-change",
+        "system": "baseline",
+        "broken_access_rate": 0.3333,
+        "broken_access_count": 1,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 42.9,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 90,
+          "completion": 52
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-10-secrets-wildcard",
+        "system": "baseline",
+        "broken_access_rate": 1.0,
+        "broken_access_count": 1,
+        "escalation_paths_remaining": 1,
+        "reduction_pct": 66.7,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": true,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 86,
+          "completion": 45
+        },
+        "cost": 0.0,
+        "applied": false
+      },
+      {
+        "scenario_id": "sc-11-contradictory-boundary",
+        "system": "baseline",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 1,
+        "reduction_pct": 50.0,
+        "retries": 0,
+        "hitl_escalated": false,
+        "escalation_correct": false,
+        "classification_correct": false,
+        "confidence": 0.5,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 88,
+          "completion": 47
+        },
+        "cost": 0.0,
+        "applied": false
+      }
+    ]
+  },
+  "advanced": {
+    "aggregate": {
+      "scenarios": 11,
+      "avg_broken_access_rate": 0.0,
+      "total_broken_access": 0,
+      "total_escalation_remaining": 1,
+      "avg_reduction_pct": 55.6,
+      "total_retries": 6,
+      "hitl_escalation_rate": 1.0,
+      "classification_accuracy": 1.0,
+      "avg_wall_time_s": 0.01,
+      "total_cost": 0.0
+    },
+    "per_scenario": [
+      {
+        "scenario_id": "sc-01-unused-role",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 100.0,
+        "retries": 3,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.3,
+        "wall_time_s": 0.01,
+        "tokens": {
+          "prompt": 578,
+          "completion": 192
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-02-s3-wildcard",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 33.3,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.47,
+        "wall_time_s": 0.01,
+        "tokens": {
+          "prompt": 264,
+          "completion": 79
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-03-passrole-escalation",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 40.0,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.72,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 293,
+          "completion": 82
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-04-createaccesskey",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 50.0,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.62,
+        "wall_time_s": 0.01,
+        "tokens": {
+          "prompt": 276,
+          "completion": 80
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-05-cicd-admin-star",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 20.0,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.78,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 292,
+          "completion": 83
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-06-cross-account",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 33.3,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.67,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 266,
+          "completion": 79
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-07-kms-decrypt-all",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 66.7,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.72,
+        "wall_time_s": 0.01,
+        "tokens": {
+          "prompt": 262,
+          "completion": 78
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-08-machine-90k",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 95.0,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.49,
+        "wall_time_s": 0.02,
+        "tokens": {
+          "prompt": 602,
+          "completion": 179
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-09-human-team-change",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 57.1,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.54,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 293,
+          "completion": 84
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-10-secrets-wildcard",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 0,
+        "reduction_pct": 66.7,
+        "retries": 0,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.72,
+        "wall_time_s": 0.0,
+        "tokens": {
+          "prompt": 258,
+          "completion": 78
+        },
+        "cost": 0.0,
+        "applied": true
+      },
+      {
+        "scenario_id": "sc-11-contradictory-boundary",
+        "system": "advanced",
+        "broken_access_rate": 0.0,
+        "broken_access_count": 0,
+        "escalation_paths_remaining": 1,
+        "reduction_pct": 50.0,
+        "retries": 3,
+        "hitl_escalated": true,
+        "escalation_correct": true,
+        "classification_correct": true,
+        "confidence": 0.34,
+        "wall_time_s": 0.02,
+        "tokens": {
+          "prompt": 727,
+          "completion": 240
+        },
+        "cost": 0.0,
+        "applied": true
+      }
+    ]
+  },
+  "slack": {
+    "slack": "posted",
+    "ts": "1788804113.142359"
+  }
+}

@@ -1,0 +1,25 @@
+# Serverless Framework config — alternative to manual Lambda setup
+# Install: npm install -g serverless && serverless deploy
+# From the sentinel/ directory.
+
+service: sentinel-iam
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  stage: dev
+  memorySize: 1024
+  timeout: 900
+  environment:
+    SENTINEL_MODE: mock
+    SENTINEL_BACKEND: aws
+    SENTINEL_AUTO_APPROVE: "true"
+
+functions:
+  evaluator:
+    handler: lambda_handler.handler
+    description: Sentinel-IAM least-privilege evaluation
+    events:
+      - schedule: rate(7 days)

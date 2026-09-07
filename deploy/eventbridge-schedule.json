@@ -1,0 +1,14 @@
+{
+  "Name": "sentinel-iam-weekly-eval",
+  "Description": "Run Sentinel-IAM evaluation weekly",
+  "ScheduleExpression": "rate(7 days)",
+  "State": "ENABLED",
+  "Targets": [
+    {
+      "Id": "sentinel-lambda",
+      "Arn": "arn:aws:lambda:us-east-1:024687770564:function:sentinel-iam",
+      "RoleArn": "arn:aws:iam::024687770564:role/sentinel-events-role",
+      "Input": "{}"
+    }
+  ]
+}
